@@ -1,10 +1,32 @@
 <template>
-  <section>
-    <router-link to="/">&lt; Reset</router-link>
-    Game wrapper
+  <section class="container">
+    <!-- Movie section as 8 wide -->
+    <div class="tile is-ancestor">
+      <div class="tile is-vertical is-parent is-8">
+        <div class="tile is-child box">
+          Movie
+        </div>
+      </div>
 
+      <!-- Sidebar with score, input, and history as 4 wide -->
+      <div class="tile is-vertical is-parent is-4">
+        <div class="tile is-child box notification is-success">
+          <span class="title">{{this.score}}</span>
+          <span class="title">points</span>
+          <span class="sub-title is-block">Movie {{this.currentQuestion}}/10</span>
+        </div>
+        <div class="tile is-child box">
+          <b-field label="Movie Title" class="is-size-4">
+            <b-input v-model="currentGuess"></b-input>
+          </b-field>
+        </div>
+        <div class="tile is-child box">
+          History
+          <router-link to="/" class="is-block">&lt; Reset</router-link>
+        </div>
+      </div>
+    </div>
   </section>
-
 </template>
 
 <script>
@@ -14,7 +36,10 @@ export default {
   name: 'Game',
   data () {
     return {
-      movieData: null
+      movieData: null,
+      score: 0,
+      currentQuestion: 1,
+      currentGuess: ''
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -38,7 +63,7 @@ export default {
       next(vm => Object.assign(vm.$data, {movieData: resp.data}))
     })
     .catch(err => {
-      // TODO create error page
+      // @TODO create error page
       console.log(err)
     })
   }

@@ -33,7 +33,7 @@
 
 <script>
 import axios from 'axios'
-import { shuffle } from 'lodash'
+import { shuffle, debounce } from 'lodash'
 
 export default {
   name: 'Game',
@@ -73,14 +73,17 @@ export default {
       console.log(err)
     })
   },
-  /**
-   * Begin game once movieData is updated
-   * 'movieData' should be updated inside the componet
-   * Use 'movieList' for game related data manipulation
-   */
   watch: {
-    'movieData': function () {
+    /**
+     * Begin game once movieData is updated
+     * 'movieData' should be updated inside the componet
+     * Use 'movieList' for game related data manipulation
+     */
+    movieData: function () {
       this.beginGame()
+    },
+    currentGuess: function () {
+      this.handleGuess()
     }
   },
   methods: {
@@ -91,6 +94,14 @@ export default {
     getMovie () {
       this.currentMovie = this.movieList[this.currentMovieIndex]
       this.currentMovieIndex++
+    },
+    handleGuess: debounce(function () {
+      if (this.currentGuess.toLowerCase() === this.currentMovie.title.toLowerCase()) {
+        this.handleCorrectGuess()
+      }
+    }, 200),
+    handleCorrectGuess () {
+      console.log('correct guess')
     }
   }
 }

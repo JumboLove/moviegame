@@ -5,6 +5,8 @@
       <div class="tile is-vertical is-parent is-8">
         <div class="tile is-child box">
           Movie
+          {{currentMovie}}
+          {{currentMovie.title}}
         </div>
       </div>
 
@@ -21,7 +23,7 @@
           </b-field>
         </div>
         <div class="tile is-child box">
-          History
+          History test
           <router-link to="/" class="is-block">&lt; Reset</router-link>
         </div>
       </div>
@@ -31,15 +33,19 @@
 
 <script>
 import axios from 'axios'
+import { shuffle } from 'lodash'
 
 export default {
   name: 'Game',
   data () {
     return {
       movieData: null,
+      movieList: [],
       score: 0,
       currentQuestion: 1,
-      currentGuess: ''
+      currentGuess: '',
+      currentMovieIndex: 0,
+      currentMovie: {}
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -66,6 +72,26 @@ export default {
       // @TODO create error page
       console.log(err)
     })
+  },
+  /**
+   * Begin game once movieData is updated
+   * 'movieData' should be updated inside the componet
+   * Use 'movieList' for game related data manipulation
+   */
+  watch: {
+    'movieData': function () {
+      this.beginGame()
+    }
+  },
+  methods: {
+    beginGame () {
+      this.movieList = shuffle(this.movieData.results)
+      this.getMovie()
+    },
+    getMovie () {
+      this.currentMovie = this.movieList[this.currentMovieIndex]
+      this.currentMovieIndex++
+    }
   }
 }
 </script>

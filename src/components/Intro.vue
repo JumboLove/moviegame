@@ -7,10 +7,13 @@
     <p>There is no penalty for guessing incorrectly</p>
 
     <div class="config">
-      Slider to determine range of movie release years TODO
+      <div class="slider-wrapper">
+        <h2>Select your year range</h2>
+        <vue-slider v-model="slider.value" v-bind="slider.options"></vue-slider>
+      </div>
 
       <div class="start-wrapper">
-        <router-link :to="{ name: 'Game', params: { start: this.start, end: this.end}}">Test</router-link>
+        <router-link :to="{ name: 'Game', params: { start: this.slider.value[0], end: this.slider.value[1]}}">Start</router-link>
       </div>
     </div>
   </section>
@@ -18,12 +21,25 @@
 </template>
 
 <script>
+import vueSlider from 'vue-slider-component'
+
 export default {
   name: 'Intro',
+  components: {
+    vueSlider
+  },
   data () {
     return {
-      start: '1990',
-      end: '2011'
+      slider: {
+        value: [
+          1990,
+          2017
+        ],
+        options: {
+          min: 1970,
+          max: 2017
+        }
+      }
     }
   }
 }
@@ -33,5 +49,9 @@ export default {
 .start-wrapper {
   margin: 2rem auto;
   text-align: center;
+}
+
+.slider-wrapper {
+  margin: 2rem auto;
 }
 </style>

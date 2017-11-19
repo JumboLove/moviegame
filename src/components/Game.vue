@@ -14,7 +14,7 @@ export default {
   name: 'Game',
   data () {
     return {
-
+      movieData: null
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -30,14 +30,15 @@ export default {
         sort_by: 'popularity.desc',
         with_original_language: 'en',
         include_adult: false,
-        'primary_release_date.gte': '1990',
-        'primary_release_date.lte': '2010'
+        'primary_release_date.gte': to.params.start,
+        'primary_release_date.lte': to.params.end
       }
     })
     .then(resp => {
       next(vm => Object.assign(vm.$data, {movieData: resp.data}))
     })
     .catch(err => {
+      // TODO create error page
       console.log(err)
     })
   }

@@ -26,10 +26,37 @@ export default {
     }
   },
   created () {
-    EventBus.$on('start-timer', this.startTimer)
+    EventBus.$on('start-timer', () => { this.startTimer() })
   },
   destroyed () {
     EventBus.$off('start-timer')
+  },
+  watch: {
+    timeLeft: function () {
+      switch (this.timeLeft) {
+        case 9000:
+          EventBus.$emit('show-hint-1')
+          break
+        case 7000:
+          EventBus.$emit('show-hint-2')
+          break
+        case 5000:
+          EventBus.$emit('show-hint-3')
+          break
+        case 3000:
+          EventBus.$emit('show-hint-4')
+          break
+        case 2000:
+          EventBus.$emit('show-hint-5')
+          break
+        case 0:
+          EventBus.$emit('show-hint-6')
+          break
+        default:
+          // Do nothing
+          break
+      }
+    }
   },
   methods: {
     startTimer () {

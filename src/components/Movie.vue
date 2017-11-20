@@ -28,6 +28,7 @@
 
 <script>
 import { take } from 'lodash'
+import { EventBus } from '@/event-bus.js'
 
 export default {
   name: 'Movie',
@@ -36,6 +37,19 @@ export default {
     return {
 
     }
+  },
+  created () {
+    EventBus.$on('show-hint-1', () => { this.showTagline() })
+    EventBus.$on('show-hint-2', () => { this.showGenre() })
+    // @TODO finish
+  },
+  destroyed () {
+    EventBus.$off('show-hint-1')
+    EventBus.$off('show-hint-2')
+    EventBus.$off('show-hint-3')
+    EventBus.$off('show-hint-4')
+    EventBus.$off('show-hint-5')
+    EventBus.$off('show-hint-6')
   },
   computed: {
     starring: function () {
@@ -51,6 +65,14 @@ export default {
       let genreList = []
       take(this.info.genres, 3).map((genre) => { genreList.push(genre.name) })
       return genreList.join(', ')
+    }
+  },
+  methods: {
+    showTagline () {
+      console.log('show tagline')
+    },
+    showGenre () {
+      console.log('show genre')
     }
   }
 }

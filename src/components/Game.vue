@@ -4,10 +4,7 @@
     <div class="tile is-ancestor">
       <div class="tile is-vertical is-parent is-8">
         <div class="tile is-child box">
-
-          Movie
-          {{currentMovie}}
-          {{currentMovie.title}}
+          <Movie :info="currentMovie"></Movie>
         </div>
       </div>
 
@@ -26,7 +23,7 @@
           </b-field>
         </div>
         <div class="tile is-child box">
-          History test
+          History test @TODO
           <router-link to="/" class="is-block">&lt; Reset</router-link>
         </div>
       </div>
@@ -40,10 +37,11 @@ import { shuffle, debounce } from 'lodash'
 import { EventBus } from '@/event-bus.js'
 
 import Timer from '@/components/Timer'
+import Movie from '@/components/Movie'
 
 export default {
   name: 'Game',
-  components: {Timer},
+  components: {Timer, Movie},
   data () {
     return {
       movieData: null,
@@ -100,8 +98,21 @@ export default {
       EventBus.$emit('start-timer')
     },
     getMovie () {
-      this.currentMovie = this.movieList[this.currentMovieIndex]
-      this.currentMovieIndex++
+      // Get extra details with another API call
+      axios.get(`https://api.themoviedb.org/3/movie/${this.movieList[this.currentMovieIndex].id}`, {
+        params: {
+          api_key: 'c4ad04648c8511d24d60ef4965cb2e52',
+          append_to_response: 'credits'
+        }
+      })
+      .then(resp => {
+        this.currentMovie = resp.data
+        this.currentMovieIndex++
+      })
+      .catch(err => {
+        // @TODO create error page
+        console.log(err)
+      })
     },
     handleGuess: debounce(function () {
       if (this.currentGuess.toLowerCase() === this.currentMovie.title.toLowerCase()) {

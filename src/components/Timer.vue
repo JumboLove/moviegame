@@ -48,5 +48,7 @@ export default {
 </script>
 
 <style scoped>
-
+  progress::-webkit-progress-value {
+    transition: width 0.2s linear
+  }
 </style>

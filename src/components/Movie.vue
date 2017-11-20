@@ -4,23 +4,23 @@
       {{this.info.tagline}}
     </div>
 
-    <div>
+    <div v-if="showGenre">
       {{genre}}
     </div>
 
-    <div>
+    <div v-if="showRelease">
       {{this.info.release_date}}
     </div>
 
-    <div>
+    <div v-if="showStarring">
       {{starring}}
     </div>
 
-    <div>
+    <div v-if="showOverview">
       {{this.info.overview}}
     </div>
 
-    <div>
+    <div v-if="showTitle">
       {{this.info.title}}
     </div>
   </div>
@@ -35,13 +35,21 @@ export default {
   props: ['info'],
   data () {
     return {
-
+      showTagline: false,
+      showGenre: false,
+      showRelease: false,
+      showStarring: false,
+      showOverview: false,
+      showTitle: false
     }
   },
   created () {
-    EventBus.$on('show-hint-1', () => { this.showTagline() })
-    EventBus.$on('show-hint-2', () => { this.showGenre() })
-    // @TODO finish
+    EventBus.$on('show-hint-1', () => { this.showTagline = true })
+    EventBus.$on('show-hint-2', () => { this.showGenre = true })
+    EventBus.$on('show-hint-3', () => { this.showRelease = true })
+    EventBus.$on('show-hint-4', () => { this.showStarring = true })
+    EventBus.$on('show-hint-5', () => { this.showOverview = true })
+    EventBus.$on('show-hint-6', () => { this.showTitle = true })
   },
   destroyed () {
     EventBus.$off('show-hint-1')
@@ -68,12 +76,7 @@ export default {
     }
   },
   methods: {
-    showTagline () {
-      console.log('show tagline')
-    },
-    showGenre () {
-      console.log('show genre')
-    }
+
   }
 }
 </script>

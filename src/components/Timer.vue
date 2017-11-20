@@ -14,6 +14,7 @@ export default {
     return {
       timeStart: 10000,
       timeLeft: 10000,
+      tick: 20,
       timerObj: null
     }
   },
@@ -34,19 +35,19 @@ export default {
   watch: {
     timeLeft: function () {
       switch (this.timeLeft) {
-        case 9000:
+        case 10000:
           EventBus.$emit('show-hint-1')
           break
-        case 7000:
+        case 8700:
           EventBus.$emit('show-hint-2')
           break
-        case 5000:
+        case 6000:
           EventBus.$emit('show-hint-3')
           break
-        case 3000:
+        case 5200:
           EventBus.$emit('show-hint-4')
           break
-        case 2000:
+        case 4000:
           EventBus.$emit('show-hint-5')
           break
         case 0:
@@ -60,14 +61,14 @@ export default {
   },
   methods: {
     startTimer () {
-      this.timerObj = window.setInterval(this.tickDown, 20)
+      this.timerObj = window.setInterval(this.tickDown, this.tick)
     },
     stopTimer () {
       window.clearInterval(this.timerObj)
     },
     tickDown () {
       if (this.timeLeft > 0) {
-        this.timeLeft = this.timeLeft - 20
+        this.timeLeft = this.timeLeft - this.tick
       }
     }
   }

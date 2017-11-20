@@ -1,9 +1,11 @@
 <template>
   <div>
-    Movie {{this.info.title}}
-
     <div>
       {{this.info.tagline}}
+    </div>
+
+    <div>
+      {{genre}}
     </div>
 
     <div>
@@ -15,10 +17,6 @@
     </div>
 
     <div>
-      {{genre}}
-    </div>
-
-    <div>
       {{this.info.overview}}
     </div>
 
@@ -26,11 +24,11 @@
       {{this.info.title}}
     </div>
   </div>
-  </div>
-
 </template>
 
 <script>
+import { take } from 'lodash'
+
 export default {
   name: 'Movie',
   props: ['info'],
@@ -41,10 +39,18 @@ export default {
   },
   computed: {
     starring: function () {
-      return 'starring'
+      if (!this.info || !this.info.credits) { return '' }
+
+      let castList = []
+      take(this.info.credits.cast, 5).map((castMember) => { castList.push(castMember.name) })
+      return castList.join(', ')
     },
     genre: function () {
-      return 'genre...'
+      if (!this.info || !this.info.genres) { return '' }
+
+      let genreList = []
+      take(this.info.genres, 3).map((genre) => { genreList.push(genre.name) })
+      return genreList.join(', ')
     }
   }
 }

@@ -4,6 +4,7 @@
     <div class="tile is-ancestor">
       <div class="tile is-vertical is-parent is-8">
         <div class="tile is-child box">
+
           Movie
           {{currentMovie}}
           {{currentMovie.title}}
@@ -18,6 +19,8 @@
           <span class="sub-title is-block">Movie {{this.currentQuestion}}/10</span>
         </div>
         <div class="tile is-child box">
+          <Timer></Timer>
+          <hr />
           <b-field label="Movie Title" class="is-size-4">
             <b-input v-model="currentGuess"></b-input>
           </b-field>
@@ -34,9 +37,13 @@
 <script>
 import axios from 'axios'
 import { shuffle, debounce } from 'lodash'
+import { EventBus } from '@/event-bus.js'
+
+import Timer from '@/components/Timer'
 
 export default {
   name: 'Game',
+  components: {Timer},
   data () {
     return {
       movieData: null,
@@ -90,6 +97,7 @@ export default {
     beginGame () {
       this.movieList = shuffle(this.movieData.results)
       this.getMovie()
+      EventBus.$emit('start-timer')
     },
     getMovie () {
       this.currentMovie = this.movieList[this.currentMovieIndex]
@@ -102,6 +110,10 @@ export default {
     }, 200),
     handleCorrectGuess () {
       console.log('correct guess')
+      // update score
+      // push correct guess to history panel
+      // get new movie
+      // reset timer
     }
   }
 }

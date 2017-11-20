@@ -12,15 +12,16 @@ export default {
   name: 'Timer',
   data () {
     return {
-      timeStart: 10000,
-      timeLeft: 10000,
+      timeStart: 13000,
+      timeLeft: 13000,
+      maxPoints: 1000,
       tick: 20,
       timerObj: null
     }
   },
   computed: {
     timeToPoints: function () {
-      return Math.floor(this.timeLeft / 10)
+      return Math.floor((this.timeStart / this.maxPoints) * this.timeLeft)
     },
     timeToPercent: function () {
       return Math.floor(this.timeLeft / this.timeStart * 100)
@@ -35,16 +36,16 @@ export default {
   watch: {
     timeLeft: function () {
       switch (this.timeLeft) {
-        case 10000:
+        case this.timeStart:
           EventBus.$emit('show-hint-1')
           break
-        case 8700:
+        case 11000:
           EventBus.$emit('show-hint-2')
           break
-        case 6000:
+        case 8000:
           EventBus.$emit('show-hint-3')
           break
-        case 5200:
+        case 6000:
           EventBus.$emit('show-hint-4')
           break
         case 4000:

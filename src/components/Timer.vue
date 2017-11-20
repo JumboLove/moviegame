@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     timeToPoints: function () {
-      return Math.floor((this.timeStart / this.maxPoints) * this.timeLeft)
+      return Math.floor((this.maxPoints / this.timeStart) * this.timeLeft)
     },
     timeToPercent: function () {
       return Math.floor(this.timeLeft / this.timeStart * 100)
@@ -29,9 +29,11 @@ export default {
   },
   created () {
     EventBus.$on('start-timer', () => { this.startTimer() })
+    EventBus.$on('stop-timer', () => { this.stopTimer() })
   },
   destroyed () {
     EventBus.$off('start-timer')
+    EventBus.$off('stop-timer')
   },
   watch: {
     timeLeft: function () {
@@ -66,6 +68,7 @@ export default {
     },
     stopTimer () {
       window.clearInterval(this.timerObj)
+      EventBus.$emit('report-score', this.timeToPoints)
     },
     tickDown () {
       if (this.timeLeft > 0) {

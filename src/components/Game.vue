@@ -21,10 +21,18 @@
           <b-field label="Movie Title" class="is-size-4">
             <b-input v-model="currentGuess"></b-input>
           </b-field>
+          <span class="sub-title is-success"v-if="solved">You got it! Next one coming up...</span>
         </div>
         <div class="tile is-child box">
-          History test @TODO
+          <span class="sub-title">History</span>
           <router-link to="/" class="is-block">&lt; Reset</router-link>
+          <ul>
+            <li v-for="round in roundHistory" :key="round.round">
+                {{round.round}}
+                {{round.name}}
+                {{round.success}}
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -33,7 +41,7 @@
 
 <script>
 import axios from 'axios'
-import { shuffle, debounce } from 'lodash'
+import { shuffle, debounce, delay } from 'lodash'
 import { EventBus } from '@/event-bus.js'
 
 import Timer from '@/components/Timer'
@@ -50,7 +58,9 @@ export default {
       currentQuestion: 1,
       currentGuess: '',
       currentMovieIndex: 0,
-      currentMovie: {}
+      currentMovie: {},
+      solved: false,
+      roundHistory: []
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -78,6 +88,9 @@ export default {
       console.log(err)
     })
   },
+  created () {
+    EventBus.$on('report-score', (score) => { this.addToScore(score) })
+  },
   watch: {
     /**
      * Begin game once movieData is updated
@@ -95,6 +108,7 @@ export default {
     beginGame () {
       this.movieList = shuffle(this.movieData.results)
       this.getMovie()
+      this.solved = false
       EventBus.$emit('start-timer')
     },
     getMovie () {
@@ -115,16 +129,42 @@ export default {
       })
     },
     handleGuess: debounce(function () {
-      if (this.currentGuess.toLowerCase() === this.currentMovie.title.toLowerCase()) {
+      if (!this.solved && this.currentGuess.toLowerCase() === this.currentMovie.title.toLowerCase()) {
+        this.solved = true
         this.handleCorrectGuess()
       }
     }, 200),
     handleCorrectGuess () {
-      console.log('correct guess')
-      // update score
-      // push correct guess to history panel
+      // stopping the timer will trigger a score event
+      // where the Timer will report the score back to this component
+      EventBus.$emit('stop-timer')
+
+      // push successful round to history panel
+      this.roundHistory.push({
+        round: this.currentQuestion,
+        name: this.currentMovie.title,
+        success: true
+      })
+
+      delay(this.nextRound, 2000)
+    },
+    handleTimeRanOut () {
+      // push failed round to history panel
+      this.roundHistory.push({
+        round: this.currentQuestion,
+        name: this.currentMovie.title,
+        success: false
+      })
+
+      delay(this.nextRound, 2000)
+    },
+    nextRound () {
+      console.log('start next round')
       // get new movie
       // reset timer
+    },
+    addToScore (score) {
+      this.score += score
     }
   }
 }

@@ -55,6 +55,7 @@ export default {
           break
         case 0:
           EventBus.$emit('show-hint-6')
+          EventBus.$emit('round-time-expired')
           break
         default:
           // Do nothing

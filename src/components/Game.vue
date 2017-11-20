@@ -90,6 +90,7 @@ export default {
   },
   created () {
     EventBus.$on('report-score', (score) => { this.addToScore(score) })
+    EventBus.$on('round-time-expired', () => { this.handleTimeRanOut() })
   },
   watch: {
     /**
@@ -146,7 +147,7 @@ export default {
         success: true
       })
 
-      delay(this.nextRound, 2000)
+      delay(this.nextRound, 3000)
     },
     handleTimeRanOut () {
       // push failed round to history panel
@@ -156,7 +157,7 @@ export default {
         success: false
       })
 
-      delay(this.nextRound, 2000)
+      delay(this.nextRound, 3000)
     },
     nextRound () {
       console.log('start next round')

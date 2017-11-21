@@ -166,7 +166,7 @@ export default {
             this.currentMovieIndex++
             EventBus.$emit('reset-movie')
             EventBus.$emit('reset-timer')
-            EventBus.$emit('start-timer')
+            delay(() => { EventBus.$emit('start-timer') }, 1000)
           })
           .catch(err => {
             // @TODO create error page

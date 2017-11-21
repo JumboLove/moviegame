@@ -13,7 +13,7 @@
         <div class="tile is-child box notification is-success">
           <span class="title">{{this.score}}</span>
           <span class="title">points</span>
-          <span class="sub-title is-block">Movie {{this.currentQuestion}}/10</span>
+          <span class="sub-title is-block">Movie {{this.currentQuestion}}/{{this.totalQuestions}}</span>
         </div>
         <div class="tile is-child box">
           <Timer></Timer>
@@ -55,7 +55,8 @@ export default {
       movieData: null,
       movieList: [],
       score: 0,
-      currentQuestion: 1,
+      currentQuestion: 0,
+      totalQuestions: 10,
       currentGuess: '',
       currentMovieIndex: 0,
       currentMovie: {},
@@ -107,26 +108,17 @@ export default {
   },
   methods: {
     beginGame () {
+      this.currentQuestion = 0
       this.movieList = shuffle(this.movieData.results)
-      this.getMovie()
-      this.solved = false
-      EventBus.$emit('start-timer')
+      this.nextRound()
     },
     getMovie () {
       // Get extra details with another API call
-      axios.get(`https://api.themoviedb.org/3/movie/${this.movieList[this.currentMovieIndex].id}`, {
+      return axios.get(`https://api.themoviedb.org/3/movie/${this.movieList[this.currentMovieIndex].id}`, {
         params: {
           api_key: 'c4ad04648c8511d24d60ef4965cb2e52',
           append_to_response: 'credits'
         }
-      })
-      .then(resp => {
-        this.currentMovie = resp.data
-        this.currentMovieIndex++
-      })
-      .catch(err => {
-        // @TODO create error page
-        console.log(err)
       })
     },
     handleGuess: debounce(function () {
@@ -150,6 +142,8 @@ export default {
       delay(this.nextRound, 3000)
     },
     handleTimeRanOut () {
+      EventBus.$emit('stop-timer')
+
       // push failed round to history panel
       this.roundHistory.push({
         round: this.currentQuestion,
@@ -160,9 +154,28 @@ export default {
       delay(this.nextRound, 3000)
     },
     nextRound () {
-      console.log('start next round')
-      // get new movie
-      // reset timer
+      if (this.currentQuestion === this.totalQuestions) {
+        this.finishGame()
+      } else {
+        this.currentQuestion++
+        this.currentGuess = ''
+        this.solved = false
+        this.getMovie()
+          .then(resp => {
+            this.currentMovie = resp.data
+            this.currentMovieIndex++
+            EventBus.$emit('reset-movie')
+            EventBus.$emit('reset-timer')
+            EventBus.$emit('start-timer')
+          })
+          .catch(err => {
+            // @TODO create error page
+            console.log(err)
+          })
+      }
+    },
+    finishGame () {
+      console.log('finish game')
     },
     addToScore (score) {
       this.score += score

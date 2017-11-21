@@ -30,10 +30,12 @@ export default {
   created () {
     EventBus.$on('start-timer', () => { this.startTimer() })
     EventBus.$on('stop-timer', () => { this.stopTimer() })
+    EventBus.$on('reset-timer', () => { this.resetTimer() })
   },
   destroyed () {
     EventBus.$off('start-timer')
     EventBus.$off('stop-timer')
+    EventBus.$off('reset-timer')
   },
   watch: {
     timeLeft: function () {
@@ -70,6 +72,10 @@ export default {
     stopTimer () {
       window.clearInterval(this.timerObj)
       EventBus.$emit('report-score', this.timeToPoints)
+    },
+    resetTimer () {
+      this.timerObj = null
+      this.timeLeft = this.timeStart
     },
     tickDown () {
       if (this.timeLeft > 0) {

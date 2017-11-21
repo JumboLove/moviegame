@@ -1,5 +1,7 @@
 <template>
   <div>
+
+    {{this.info.title}}
     <div>
       {{this.info.tagline}}
     </div>
@@ -50,6 +52,7 @@ export default {
     EventBus.$on('show-hint-4', () => { this.showStarring = true })
     EventBus.$on('show-hint-5', () => { this.showOverview = true })
     EventBus.$on('show-hint-6', () => { this.showTitle = true })
+    EventBus.$on('reset-movie', () => { this.resetMovie() })
   },
   destroyed () {
     EventBus.$off('show-hint-1')
@@ -58,6 +61,7 @@ export default {
     EventBus.$off('show-hint-4')
     EventBus.$off('show-hint-5')
     EventBus.$off('show-hint-6')
+    EventBus.$off('reset-movie')
   },
   computed: {
     starring: function () {
@@ -76,7 +80,14 @@ export default {
     }
   },
   methods: {
-
+    resetMovie () {
+      this.showTagline = false
+      this.showGenre = false
+      this.showRelease = false
+      this.showStarring = false
+      this.showOverview = false
+      this.showTitle = false
+    }
   }
 }
 </script>

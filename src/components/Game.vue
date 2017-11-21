@@ -30,8 +30,10 @@
 
         <!-- History -->
         <div class="tile is-child box">
-          <span class="subtitle">History</span>
-          <router-link to="/" class="is-block">&lt; Reset</router-link>
+            <div class="history-header">
+              <span class="subtitle is-marginless">History</span>
+              <router-link to="/" class="button is-primary">Reset</router-link>
+            </div>
           <ul>
             <li class="round-result" v-for="round in roundHistory" :key="round.round">
               <div class="notification" v-bind:class="[round.success ? 'is-success': 'is-danger']">
@@ -82,7 +84,7 @@ export default {
     axios.get('https://api.themoviedb.org/3/discover/movie', {
       params: {
         api_key: 'c4ad04648c8511d24d60ef4965cb2e52',
-        page: Math.floor(Math.random() * 10) + 1,
+        page: Math.floor(Math.random() * 30) + 1,
         sort_by: 'popularity.desc',
         with_original_language: 'en',
         include_adult: false,
@@ -197,6 +199,14 @@ export default {
 <style scoped>
   .answer-section {
     min-height: 205px;
+  }
+
+  .history-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
   }
 
   .round-result .notification {

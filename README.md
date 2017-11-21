@@ -2,4 +2,4 @@
 Movie Game using VueJS
 
 # Demo
-Can be viewed at my (personal website)[http://davidwitt.me/moviegame/index.html#/]
+Can be viewed at my [personal website](http://davidwitt.me/moviegame/index.html#/)

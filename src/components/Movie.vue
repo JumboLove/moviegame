@@ -168,13 +168,18 @@ export default {
     z-index: 3;
   }
 
+  .movie-overlay-content {
+    height: 100%;
+  }
+
   .movie-overlay-upper {
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch;
     justify-content: flex-start;
     flex-wrap: wrap;
     color: #fff;
+    height: 100%;
   }
 
   .movie-poster {
@@ -184,7 +189,9 @@ export default {
 
   .movie-info {
     flex: 2;
-    padding: 1rem;
+    padding: 0 1rem;
+    margin: 1rem 1rem 1rem 0;
+    border-left: 1px solid #ccc;
   }
 
   .movie-summary {

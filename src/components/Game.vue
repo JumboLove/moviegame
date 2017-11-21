@@ -104,6 +104,10 @@ export default {
     EventBus.$on('report-score', (score) => { this.addToScore(score) })
     EventBus.$on('round-time-expired', () => { this.handleTimeRanOut() })
   },
+  destroyed () {
+    EventBus.$off('report-score')
+    EventBus.$off('round-time-expired')
+  },
   watch: {
     /**
      * Begin game once movieData is updated
@@ -119,12 +123,13 @@ export default {
   },
   methods: {
     beginGame () {
+      EventBus.$emit('stop-timer')
       this.currentQuestion = 0
       this.movieList = shuffle(this.movieData.results)
       this.nextRound()
     },
     getMovie () {
-      // Get extra details with another API call
+      // Get extra details with another API call, return a Promise
       return axios.get(`https://api.themoviedb.org/3/movie/${this.movieList[this.currentMovieIndex].id}`, {
         params: {
           api_key: 'c4ad04648c8511d24d60ef4965cb2e52',

@@ -25,7 +25,8 @@
           <b-field label="Movie Title" class="is-size-4">
             <b-input v-model="currentGuess"></b-input>
           </b-field>
-          <span class="subtitle has-text-success is-6"v-if="solved">You got it! Next one coming up...</span>
+          <span class="subtitle has-text-success is-6"v-if="solved && !gameOver">You got it! Next one coming up...</span>
+          <span class="subtitle has-text-success is-6"v-if="gameOver">Game Over. Click 'Reset' to start over</span>
         </div>
 
         <!-- History -->
@@ -100,6 +101,11 @@ export default {
       console.log(err)
     })
   },
+  computed: {
+    gameOver: function () {
+      return this.currentQuestion === this.totalQuestions
+    }
+  },
   created () {
     EventBus.$on('report-score', (score) => { this.addToScore(score) })
     EventBus.$on('round-time-expired', () => { this.handleTimeRanOut() })
@@ -170,7 +176,7 @@ export default {
       delay(this.nextRound, 3000)
     },
     nextRound () {
-      if (this.currentQuestion === this.totalQuestions) {
+      if (this.gameOver) {
         this.finishGame()
       } else {
         this.currentQuestion++

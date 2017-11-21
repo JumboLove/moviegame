@@ -47,7 +47,7 @@
               </transition>
             </div>
 
-            <div>
+            <div class="movie-overview">
               <div v-if="!showOverview">&nbsp;</div>
               <transition name="fade">
                 <p v-if="showOverview">{{this.info.overview}}</p>
@@ -192,6 +192,10 @@ export default {
     padding: 0 1rem;
     margin: 1rem 1rem 1rem 0;
     border-left: 1px solid #ccc;
+  }
+
+  .movie-overview {
+    margin-top: 2rem;
   }
 
   .movie-summary {

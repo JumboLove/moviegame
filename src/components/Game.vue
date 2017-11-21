@@ -10,27 +10,34 @@
 
       <!-- Sidebar with score, input, and history as 4 wide -->
       <div class="tile is-vertical is-parent is-4">
+
+        <!-- Score -->
         <div class="tile is-child box notification is-success">
           <span class="title">{{this.score}}</span>
           <span class="title">points</span>
           <span class="sub-title is-block">Movie {{this.currentQuestion}}/{{this.totalQuestions}}</span>
         </div>
-        <div class="tile is-child box">
+
+        <!-- Answer box -->
+        <div class="tile is-child box answer-section">
           <Timer></Timer>
           <hr />
           <b-field label="Movie Title" class="is-size-4">
             <b-input v-model="currentGuess"></b-input>
           </b-field>
-          <span class="sub-title is-success"v-if="solved">You got it! Next one coming up...</span>
+          <span class="subtitle has-text-success is-6"v-if="solved">You got it! Next one coming up...</span>
         </div>
+
+        <!-- History -->
         <div class="tile is-child box">
-          <span class="sub-title">History</span>
+          <span class="subtitle">History</span>
           <router-link to="/" class="is-block">&lt; Reset</router-link>
           <ul>
-            <li v-for="round in roundHistory" :key="round.round">
-                {{round.round}}
-                {{round.name}}
-                {{round.success}}
+            <li class="round-result" v-for="round in roundHistory" :key="round.round">
+              <div class="notification" v-bind:class="[round.success ? 'is-success': 'is-danger']">
+                <span class="is-size-4">{{round.round}}</span>
+                <span>{{round.name}}</span>
+              </div>
             </li>
           </ul>
         </div>
@@ -134,8 +141,8 @@ export default {
       // where the Timer will report the score back to this component
       EventBus.$emit('stop-timer')
 
-      // push successful round to history panel
-      this.roundHistory.push({
+      // add successful round to history panel
+      this.roundHistory.unshift({
         round: this.currentQuestion,
         name: this.currentMovie.title,
         success: true
@@ -146,8 +153,8 @@ export default {
     handleTimeRanOut () {
       EventBus.$emit('stop-timer')
 
-      // push failed round to history panel
-      this.roundHistory.push({
+      // add failed round to history panel
+      this.roundHistory.unshift({
         round: this.currentQuestion,
         name: this.currentMovie.title,
         success: false
@@ -188,5 +195,22 @@ export default {
 </script>
 
 <style scoped>
+  .answer-section {
+    min-height: 205px;
+  }
 
+  .round-result .notification {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .round-result + .round-result {
+    margin-top: 1rem;
+  }
+
+  .round-result span:first-child {
+    margin-right: 1rem;
+  }
 </style>

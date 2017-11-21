@@ -9,35 +9,55 @@
 
         <div class="movie-overlay-upper">
           <figure class="movie-poster">
-            <img :src="posterImg" :alt="this.info.title"/>
+            <transition name="fade">
+              <img v-if="showTitle" :src="posterImg" :alt="this.info.title"/>
+            </transition>
           </figure>
 
           <div class="movie-info">
-            <div v-if="showTitle">
-              {{this.info.title}}
+            <div class="title has-text-white">
+              <div v-if="!showTitle">&nbsp;</div>
+              <transition name="fade">
+                <div v-if="showTitle">{{this.info.title}}</div>
+              </transition>
             </div>
-            <div>
+
+            <div class="subtitle has-text-white">
               {{this.info.tagline}}
             </div>
 
-            <div v-if="showGenre">
-              {{genre}}
+            <div class="is-size-5">
+              <div v-if="!showGenre">&nbsp;</div>
+              <transition name="fade">
+                <div v-if="showGenre">{{genre}}</div>
+              </transition>
             </div>
 
-            <div v-if="showRelease">
-              {{this.info.release_date}}
+            <div class="is-size-5">
+              <div v-if="!showRelease">&nbsp;</div>
+              <transition name="fade">
+                <div v-if="showRelease">Released: {{this.info.release_date}}</div>
+              </transition>
             </div>
 
-            <div v-if="showStarring">
-              {{starring}}
+            <div class="is-size-5">
+              <div v-if="!showStarring">&nbsp;</div>
+              <transition name="fade">
+                <div v-if="showStarring">Starring: {{starring}}</div>
+              </transition>
+            </div>
+
+            <div>
+              <div v-if="!showOverview">&nbsp;</div>
+              <transition name="fade">
+                <p v-if="showOverview">{{this.info.overview}}</p>
+              </transition>
             </div>
           </div>
         </div>
 
         <div class="movie-summary">
-          <div v-if="showOverview">
-            {{this.info.overview}}
-          </div>
+
         </div>
       </div>
     </div>
@@ -121,6 +141,7 @@ export default {
   }
 
   .movie-backdrop img {
+    display: block;
     width: 100%;
     filter: opacity(100) grayscale(100%) contrast(130%);
     z-index: 1;
@@ -158,13 +179,23 @@ export default {
 
   .movie-poster {
     flex: 1;
+    padding: 1rem;
   }
 
   .movie-info {
     flex: 2;
+    padding: 1rem;
   }
 
   .movie-summary {
     color: #fff;
+  }
+
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s
+  }
+
+  .fade-enter, .fade-leave-to {
+    opacity: 0
   }
 </style>

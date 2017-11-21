@@ -41,6 +41,7 @@
 
 <script>
 import axios from 'axios'
+import FuzzyMatching from 'fuzzy-matching'
 import { shuffle, debounce, delay } from 'lodash'
 import { EventBus } from '@/event-bus.js'
 
@@ -60,6 +61,7 @@ export default {
       currentGuess: '',
       currentMovieIndex: 0,
       currentMovie: {},
+      currentMovieFuzzyMatch: null,
       solved: false,
       roundHistory: []
     }
@@ -122,7 +124,7 @@ export default {
       })
     },
     handleGuess: debounce(function () {
-      if (!this.solved && this.currentGuess.toLowerCase() === this.currentMovie.title.toLowerCase()) {
+      if (!this.solved && this.fuzzyMatching.get(this.currentGuess).distance >= 0.8) {
         this.solved = true
         this.handleCorrectGuess()
       }
@@ -164,6 +166,7 @@ export default {
           .then(resp => {
             this.currentMovie = resp.data
             this.currentMovieIndex++
+            this.fuzzyMatching = new FuzzyMatching([this.currentMovie.title])
             EventBus.$emit('reset-movie')
             EventBus.$emit('reset-timer')
             delay(() => { EventBus.$emit('start-timer') }, 1000)
